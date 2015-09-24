@@ -5,9 +5,9 @@ React Redux Starter Kit
 
 Starter kit to get you up and running with a bunch of awesome new technologies. This boilerplate provides server-side rendering of your routes (by way of Koa and react-router), and the sample application gives you a quick demo of Redux. All of this sits on top of a configurable, feature-rich Webpack build system that's already setup to provide unit testing, linting, hot reloading, sass imports with CSS extraction, and a whole lot more. Check out the full feature list below!
 
-Redux, React-Router, and React are constantly releasing new API changes. If you'd like to help keep this boilerplate up to date, please check out the [current todo list](https://github.com/davezuko/react-redux-starter-kit/blob/master/docs/todo.md) or create a new issue if you think this repo is missing something!
+Redux, React-Router, and React are constantly releasing new API changes. If you'd like to help keep this boilerplate up to date, please contribute or create a new issue if you think this starter kit is missing something!
 
-**NOTE**: In the past, this project came bundled with a sample Todo application to showcase the starter kit in action. The example has since been moved out of master so that you have more of a clean slate to work with, but you can still [find it in its own branch](https://github.com/davezuko/react-redux-starter-kit/tree/example/todo-application)!
+**Want to use this starter kit without the server?** There's a branch for that, [check it out here!](https://github.com/davezuko/react-redux-starter-kit/tree/no-server)
 
 Table of Contents
 -----------------
@@ -25,25 +25,27 @@ Table of Contents
 Requirements
 ------------
 
-Node `^0.12.0` or io.js `^2.0.0`.
+Node (`^4.0.0` | `^0.12.0`) or io.js `^2.0.0`.
 
 Features
 --------
 
-* [React](https://github.com/facebook/react) (`0.14.0-beta3`)
-* [react-router](https://github.com/rackt/react-router) (`1.0.0-beta`)
-* [Redux](https://github.com/gaearon/redux) (`2.0.0`)
+* [React](https://github.com/facebook/react) (`0.14.0-rc1`)
+  * Includes react-addons-test-utils (`0.14.0-rc1`)
+* [react-router](https://github.com/rackt/react-router) (`1.0.0-rc1`)
+* [Redux](https://github.com/gaearon/redux) (`^3.0.0`)
   * react-redux
-  * redux-devtools (enabled with `--debug` flag)
-    * or try `npm run dev:debugnw` to display it in a separate window.
+  * redux-devtools
+    * use `npm run dev:nw` to display in a separate window.
 * [Koa](https://github.com/koajs/koa)
 * [Immutable.js](https://github.com/facebook/immutable-js)
-* Karma
-  * Mocha w/ Chai
+* [Karma](https://github.com/karma-runner/karma)
+  * Mocha w/ Chai and Sinon-Chai
   * PhantomJS
 * [Babel](https://github.com/babel/babel)
-  * react-transform-webpack-hmr for hot reloading
-  * configured to use babel runtime rather than inline transformations
+  * `react-transform-hmr` for hot reloading
+  * `react-transform-catch-errors` with `redbox-react` for more visible error reporting
+  * Uses babel runtime rather than inline transformations
 * [Webpack](https://github.com/webpack/webpack)
   * Separate server and client bundles
     * Client bundle splits app code from vendor dependencies
@@ -60,11 +62,11 @@ Usage
 #### `npm run dev` also `npm start`
 Runs the webpack build system just like in `compile` but enables HMR. The webpack dev server can be found at `localhost:3000`.
 
-#### `npm run dev:debug`
-Same as `npm run dev` but enables `--debug` flag automatically (this will enable redux-devtools).
+#### `npm run dev:nw`
+Same as `npm run dev` but opens the debug tools in a new window.
 
-#### `npm run dev:debugnw`
-Same as `npm run dev:debug` but opens the debug tools in a new window.
+#### `npm run dev:no-debug`
+Same as `npm run dev` but disables devtools.
 
 #### `npm run compile`
 Runs the Webpack build system with your current NODE_ENV and compiles the application to disk (`~/dist`). Production builds will fail on eslint errors (but not on warnings).
@@ -102,6 +104,7 @@ You can redefine which packages to treat as vendor dependencies by editing `vend
 
 ```js
 [
+  'history',
   'immutable',
   'react',
   'react-redux',
@@ -120,20 +123,20 @@ import MyComponent from '../../components/my-component'; // without alias
 import MyComponent from 'components/my-component'; // with alias
 
   // Available aliases:
-  actions     => '~/client/actions'
-  components  => '~/client/components'
-  constants   => '~/client/constants'
-  containers  => '~/client/containers'
-  dispatchers => '~/client/dispatchers'
-  layouts     => '~/client/layouts'
-  models      => '~/client/models'
-  reducers    => '~/client/reducers'
-  routes      => '~/client/routes'
-  services    => '~/client/services'
-  stores      => '~/client/stores'
-  styles      => '~/client/styles'
-  utils       => '~/client/utils'
-  views       => '~/client/views'
+  actions     => '~/src/actions'
+  components  => '~/src/components'
+  constants   => '~/src/constants'
+  containers  => '~/src/containers'
+  dispatchers => '~/src/dispatchers'
+  layouts     => '~/src/layouts'
+  models      => '~/src/models'
+  reducers    => '~/src/reducers'
+  routes      => '~/src/routes'
+  services    => '~/src/services'
+  stores      => '~/src/stores'
+  styles      => '~/src/styles'
+  utils       => '~/src/utils'
+  views       => '~/src/views'
 ```
 
 ### Globals
@@ -159,14 +162,14 @@ Styles
 All `.scss` imports will be run through the sass-loader, extracted during production builds, and ignored during server builds. If you're requiring styles from a base styles directory (useful for generic, app-wide styles) in your JS, you can make use of the `styles` alias, e.g.:
 
 ```js
-// ~/client/components/some/nested/component/index.jsx
+// ~/src/components/some/nested/component/index.jsx
 import `styles/core.scss`;
 ```
 
 Furthermore, this `styles` directory is aliased for sass imports, which further eliminates manual directory traversing. An example nested `.scss` file:
 
 ```scss
-// current path: ~/client/styles/some/nested/style.scss
+// current path: ~/src/styles/some/nested/style.scss
 // what used to be this:
 @import '../../base';
 
@@ -177,7 +180,7 @@ Furthermore, this `styles` directory is aliased for sass imports, which further 
 Testing
 -------
 
-To add a unit test, simply create `.spec.js` file anywhere in `~/client`. The entry point for Karma uses webpack's custom require to load all these files, and both Mocha and Chai will be available to you within your test without the need to import them.
+To add a unit test, simply create `.spec.js` file anywhere in `~/src`. The entry point for Karma uses webpack's custom require to load all these files, and both Mocha and Chai will be available to you within your test without the need to import them.
 
 Utilities
 ---------
@@ -239,11 +242,4 @@ Deployment
 Troubleshooting
 ---------------
 
-### `--debug` isn't working
-If you're using one of the pre-configured npm scripts, make sure you follow npm's syntax:
-
-`npm run [command] [-- <args>]`
-
-As an example, `npm run compile` would look like this:
-
-`npm run compile -- --debug`
+Nothing yet. Having an issue? Report it and I'll get to it as soon as possible!

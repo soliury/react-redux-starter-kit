@@ -1,18 +1,22 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
+import React       from 'react';
+import Immutable from 'immutable';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as TodoActionCreators from 'actions/todo';
-import TodoList from 'components/todo-list';
+import { TodoList } from 'components';
 
-// TODO: make the create-todo form a component so that a bound action
-// can be provided rather than manually using this.props.dispatch(action)
-@connect(state => ({
+// We define mapStateToProps where we'd normally use the @connect
+// decorator so the data requirements are clear upfront, but then
+// export the decorated component after the main class definition so
+// the component can be tested w/ and w/o being connected.
+// See: http://rackt.github.io/redux/docs/recipes/WritingTests.html
+const mapStateToProps = (state) => ({
   todos : state.todos
-}))
-export default class HomeView extends React.Component {
+});
+export class HomeView extends React.Component {
   static propTypes = {
-    dispatch : React.PropTypes.func.isRequired,
-    todos  : React.PropTypes.array.isRequired
+    dispatch : React.PropTypes.func,
+    todos  : React.PropTypes.instanceOf(Immutable.List)
   }
   constructor () {
     super();
@@ -63,9 +67,8 @@ export default class HomeView extends React.Component {
 
   render () {
     const todos = this.props.todos.toJS();
-
     return (
-      <div className='view view--home'>
+      <div className='container text-center'>
         <div className='row'>
           <div className='col-md-8 col-md-offset-2'>
             <TodoList todos={todos} {...this._todoActions} />
@@ -76,3 +79,5 @@ export default class HomeView extends React.Component {
     );
   }
 }
+
+export default connect(mapStateToProps)(HomeView);

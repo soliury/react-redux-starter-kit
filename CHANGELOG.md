@@ -1,6 +1,77 @@
 Changelog
 =========
 
+0.14.0
+------
+
+#### Features
+* Replaces `react-transform-webpack-hmr` with its replacement `react-transform-hmr`. Thanks to [daviferreira](https://github.com/daviferreira).
+* Replaces `delicate-error-reporter` with `redbox-react`. Thanks to [bulby97](https://github.com/bulby97).
+* Created a `no-server` branch [here](https://github.com/davezuko/react-redux-starter-kit/tree/no-server) to make it easier for users who don't care about Koa.
+
+#### Improvements
+* Renames `client` directory to `src` to be more intuitive.
+* `inline-source-map` has been replaced by `source-map` as the default webpack devTool to reduce build sizes.
+* Refactors configuration file to focus on commonly-configured options rather than mixing them with internal configuration.
+* Swaps `dev` and `dev:debug` so debug tools are now enabled by default and can be disabled instead with `dev:no-debug`.
+* Repositions Redux devtools so they no longer block errors displayed by `redbox-react`.
+* Adds explicit directory references to some `import` statements to clarify which are from from `npm` and which are local.
+
+#### Fixes
+* Fixes naming in `HomeView` where `mapStateToProps` was incorrectly written as `mapDispatchToProps`.
+
+#### Deprecations
+* Removes local test utilities (in `~/src/utils/test`).
+
+0.13.0
+------
+
+#### Features
+* Adds `react-transform-catch-errors` along with `delicate-error-reporter`. Thanks [bulby97](https://github.com/bulby97) for this!
+
+#### Fixes
+* ExtractTextPlugin is once again production only. This fixes an issue where styles wouldn't be hot reloaded with Webpack.
+
+0.12.0
+------
+
+#### Features
+* Upgrades react-router to `^3.0.0`. This is the only reason for the minor-level version  bump.
+* Webpack now uses OccurrenceOrderPlugin to produce consistent bundle hashes.
+
+#### Fixes
+* Adds `history` to vendor dependencies to fix HMR caused by upgrade to react-router `1.0.0-rc`
+
+#### Improvements
+* Server no longer modifies initial counter state by default.
+* Adds invariant error in route rendering method to enforce router state definition through props.
+
+0.11.0
+------
+
+#### Features
+* Upgrades all React dependencies to `0.14.0-rc1`
+* Upgrades react-router to `1.0.0-rc`
+  * Updates client and server rendering accordingly
+* Adds Sinon-Chai for improved assertions and function spies
+* Adds option to disable eslint when in development
+
+#### Improvements
+* Improved example unit tests using react-addons-test-utils and Sinon Chai
+
+0.10.0
+------
+
+#### Features
+* Initial state can now be injected from the server (still WIP).
+* Adds react-addons-test-utils as a devDependency.
+
+#### Improvements
+* Eslint no longer prevents webpack from bundling in development mode if an error is emitted.
+  * See: https://github.com/MoOx/eslint-loader/issues/23
+* Updates all `.jsx` files to `.js`. (https://github.com/davezuko/react-redux-starter-kit/issues/37)
+* Updates all React component file names to be ProperCased.
+
 0.9.0
 -----
 
