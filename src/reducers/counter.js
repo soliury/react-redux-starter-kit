@@ -1,10 +1,25 @@
 import { createReducer } from 'utils';
+import * as actions from '../actions';
 
-// normally this would be imported from /constants, but in trying to keep
-// this starter kit as small as possible we'll just define it here.
-const COUNTER_INCREMENT = 'COUNTER_INCREMENT';
 
-const initialState = 0;
+const initialState = {
+    num: 0
+};
+
+
 export default createReducer(initialState, {
-  [COUNTER_INCREMENT] : (state) => state + 1
+    [actions.INCREMENT]: (state, action) => {
+        return {
+            ...state,
+            num: action.num + state.num
+        }
+    },
+
+
+    [actions.GET_TEST_DATA]: (state, action)=> {
+        return {
+            ...state,
+            data: action.data
+        }
+    }
 });
